@@ -18,6 +18,20 @@ const config: Config = {
       title: ["Trap"],
       primary: ["Roobert"],
     },
+    keyframes: {
+      float: {
+        "0%": { transform: "translateY(0)" },
+        "100%": { transform: "translateY(-20px)" },
+      },
+      wiggle: {
+        "0%, 100%": { transform: "rotate(-3deg)" },
+        "50%": { transform: "rotate(3deg)" },
+      },
+    },
+    animation: {
+      float: "float 2s infinite alternate",
+      wiggle: "wiggle 1s ease-in-out infinite",
+    },
   },
   plugins: [],
 };

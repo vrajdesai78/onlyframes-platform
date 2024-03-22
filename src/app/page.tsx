@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import Head from "next/head";
 
 export default function Home() {
@@ -9,10 +10,30 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="./favicon.ico" />
       </Head>
-      <main className="px-5 py-[10rem]">
+      <main className="relative px-5 py-[10rem] overflow-hidden">
         <div className="flex flex-col gap-8 items-center justify-center text-center">
+          <img
+            alt="asset"
+            src="/svgs/asset-a.svg"
+            className="w-32 hidden md:flex absolute left-40 top-44 animate-float"
+          />
+          <img
+            alt="asset"
+            src="/svgs/asset-c.svg"
+            className="w-40 hidden md:flex absolute -left-8 bottom-10 animate-float"
+          />
+          <img
+            alt="asset"
+            src="/svgs/asset-b.svg"
+            className="w-40 hidden md:flex absolute right-40 top-32 animate-float"
+          />
+          <img
+            alt="asset"
+            src="/svgs/asset-d.svg"
+            className="w-44 hidden md:flex absolute right-8 bottom-10 animate-wiggle"
+          />
           <p className="text-lg font-primary text-teal-300">Ship crazy 🚀</p>
-          <h1 className="text-6xl font-title tracking-tight font-semibold">
+          <h1 className="text-6xl md:text-7xl font-title tracking-tight font-semibold">
             <span className="text-transparent bg-clip-text bg-gradient-to-b from-[#ffd84b] from-[20%] to-[#b67e2b]">
               Built for new
               <br />
