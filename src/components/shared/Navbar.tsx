@@ -21,19 +21,30 @@ const Navbar = () => {
 
   const {login} = useLogin({
     async onComplete(user) {
-      if (wallets.length === 0) {
-        const res = createWallet();
-        console.log('🔑 🎉 Wallet created', {res});
+      if (authenticated) {
+        if (wallets.length === 0) {
+          const res = createWallet();
+          console.log('🔑 🎉 Wallet created', {res});
+        }
       }
+      console.log('🔑 🎉 User', {user});
       const wallet = wallets[0];
       console.log('🔑 🎉 Wallet', {wallet});
       const provider = await wallet.getEthereumProvider();
       const address = wallet.address;
-      const hash = await provider.request({
-        method: 'eth_sendTransaction',
-        params: [transactionRequest],
+      const message = 'This is the message I am signing';
+      const signature = await provider.request({
+        method: 'personal_sign',
+        params: [message, address],
       });
-      console.log('🔑 🎉 Signature', {hash});
+      console.log('🔑 🎉 Signature', {signature});
+      // const provider = await wallet.getEthereumProvider();
+      // const address = wallet.address;
+      // const hash = await provider.request({
+      //   method: 'eth_sendTransaction',
+      //   params: [transactionRequest],
+      // });
+      // console.log('🔑 🎉 Signature', {hash});
       setIsLoggedIn(true);
       console.log('🔑 🎉 Login success', {user});
       toast.success('Login successful!', {
@@ -180,7 +191,6 @@ const Navbar = () => {
             'Connect Farcaster'
           )}
         </button>
-        <button onClick={logout}>logout</button>
       </div>
     </nav>
   );

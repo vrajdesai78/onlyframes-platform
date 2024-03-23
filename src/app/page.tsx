@@ -1,4 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
+'use client';
 import Head from 'next/head';
 
 export default function Home() {
