@@ -2,8 +2,14 @@
 import Image from 'next/image';
 import React, {useEffect, useState} from 'react';
 import TagInput from './Taginput';
+import {usePrivy, useWallets} from '@privy-io/react-auth';
+import {ethers} from 'ethers';
+import {podsContractAddress} from '../../../../utils/constants';
+import {podsABI} from '../../../../utils/abi';
 
 const LiftOff = (props: any) => {
+  const {user} = usePrivy();
+  const {wallets} = useWallets();
   const {formData, setFormData} = props;
   const [tags, setTags] = useState(formData.tags);
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -11,6 +17,18 @@ const LiftOff = (props: any) => {
     console.log(value);
     setFormData({...formData, [name]: value});
   };
+  const wallet = wallets[0];
+
+  async function signMessage() {
+    if (user) {
+      const provider = await wallet.getEthersProvider();
+      await wallet.switchChain(84532);
+      const signer = provider.getSigner();
+      const helloWorldContract = new ethers.Contract(podsContractAddress, podsABI, signer);
+      const count = await helloWorldContract.getProductsCount();
+      console.log(count);
+    }
+  }
 
   useEffect(() => {
     setFormData({...formData, tags: tags});

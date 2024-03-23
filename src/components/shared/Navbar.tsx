@@ -6,6 +6,9 @@ import Link from 'next/link';
 import {usePathname} from 'next/navigation';
 import {useEffect, useState} from 'react';
 import {toast} from 'react-hot-toast';
+import {ethers} from 'ethers';
+import {podsContractAddress} from '../../../utils/constants';
+import {podsABI} from '../../../utils/abi';
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
@@ -18,6 +21,17 @@ const Navbar = () => {
     to: '0x5dDdD2099cCcE0efaD8005695c616F130b944B8d',
     value: 100000,
   };
+  const wallet = wallets[0];
+
+  async function signMessage() {
+    const provider = await wallet.getEthersProvider();
+    console.log('provider', provider);
+    await wallet.switchChain(84532);
+    const signer = provider.getSigner();
+    const helloWorldContract = new ethers.Contract(podsContractAddress, podsABI, signer);
+    const count = await helloWorldContract.getProductsCount();
+    console.log(count);
+  }
 
   const {login} = useLogin({
     async onComplete(user) {
@@ -28,23 +42,8 @@ const Navbar = () => {
         }
       }
       console.log('🔑 🎉 User', {user});
-      const wallet = wallets[0];
-      console.log('🔑 🎉 Wallet', {wallet});
-      const provider = await wallet.getEthereumProvider();
-      const address = wallet.address;
-      const message = 'This is the message I am signing';
-      const signature = await provider.request({
-        method: 'personal_sign',
-        params: [message, address],
-      });
-      console.log('🔑 🎉 Signature', {signature});
-      // const provider = await wallet.getEthereumProvider();
-      // const address = wallet.address;
-      // const hash = await provider.request({
-      //   method: 'eth_sendTransaction',
-      //   params: [transactionRequest],
-      // });
-      // console.log('🔑 🎉 Signature', {hash});
+
+      signMessage();
       setIsLoggedIn(true);
       console.log('🔑 🎉 Login success', {user});
       toast.success('Login successful!', {
