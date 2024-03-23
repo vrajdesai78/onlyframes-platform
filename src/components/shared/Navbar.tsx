@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 'use client';
 
-import {useLogin, useLogout, usePrivy} from '@privy-io/react-auth';
+import {useLogin, useLogout, usePrivy, useWallets} from '@privy-io/react-auth';
 import Link from 'next/link';
 import {usePathname} from 'next/navigation';
 import {useEffect, useState} from 'react';
@@ -10,11 +10,30 @@ import {toast} from 'react-hot-toast';
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
   const pathname = usePathname();
-  const {ready, authenticated, user} = usePrivy();
+  const {ready, authenticated, user, createWallet} = usePrivy();
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const {wallets} = useWallets();
+
+  const transactionRequest = {
+    to: '0x5dDdD2099cCcE0efaD8005695c616F130b944B8d',
+    value: 100000,
+  };
 
   const {login} = useLogin({
-    onComplete(user) {
+    async onComplete(user) {
+      if (wallets.length === 0) {
+        const res = createWallet();
+        console.log('🔑 🎉 Wallet created', {res});
+      }
+      const wallet = wallets[0];
+      console.log('🔑 🎉 Wallet', {wallet});
+      const provider = await wallet.getEthereumProvider();
+      const address = wallet.address;
+      const hash = await provider.request({
+        method: 'eth_sendTransaction',
+        params: [transactionRequest],
+      });
+      console.log('🔑 🎉 Signature', {hash});
       setIsLoggedIn(true);
       console.log('🔑 🎉 Login success', {user});
       toast.success('Login successful!', {
@@ -150,7 +169,7 @@ const Navbar = () => {
         <button
           className="hidden md:flex w-fit px-5 py-2 text-neutral-700 bg-gradient-to-tr from-teal-400 to-amber-400 rounded-lg hover:from-teal-500 hover:to-amber-500 hover:text-gray-50 hover:shadow-lg"
           onClick={login}
-          disabled={!ready || authenticated}
+          disabled={!ready && authenticated}
         >
           {isLoggedIn ? (
             <span className="flex flex-row items-center gap-x-4">
@@ -161,6 +180,7 @@ const Navbar = () => {
             'Connect Farcaster'
           )}
         </button>
+        <button onClick={logout}>logout</button>
       </div>
     </nav>
   );

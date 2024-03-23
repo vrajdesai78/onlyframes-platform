@@ -1,6 +1,7 @@
 'use client';
 
 import {PrivyProvider} from '@privy-io/react-auth';
+import {base, baseSepolia} from 'viem/chains';
 
 export default function Providers({children}: {children: React.ReactNode}) {
   return (
@@ -12,6 +13,7 @@ export default function Providers({children}: {children: React.ReactNode}) {
           accentColor: '#676FFF',
           logo: '/onlyframes.png',
         },
+        defaultChain: baseSepolia,
         loginMethods: ['farcaster'],
         embeddedWallets: {
           createOnLogin: 'all-users',
