@@ -13,9 +13,11 @@
     "**/*": "prettier --write --ignore-unknown"
   },
   "dependencies": {
+    "@privy-io/react-auth": "^1.59.5",
     "next": "14.1.4",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "react-hot-toast": "^2.4.1"
   },
   "devDependencies": {
     "@types/node": "^20",

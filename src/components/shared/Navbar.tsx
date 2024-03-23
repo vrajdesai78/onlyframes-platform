@@ -1,17 +1,57 @@
-"use client";
+/* eslint-disable @next/next/no-img-element */
+'use client';
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import {useLogin, useLogout, usePrivy} from '@privy-io/react-auth';
+import Link from 'next/link';
+import {usePathname} from 'next/navigation';
+import {useEffect, useState} from 'react';
+import {toast} from 'react-hot-toast';
 
 const Navbar = () => {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<Boolean>(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
   const pathname = usePathname();
+  const {ready, authenticated, user} = usePrivy();
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+
+  const {login} = useLogin({
+    onComplete(user) {
+      setIsLoggedIn(true);
+      console.log('🔑 🎉 Login success', {user});
+      toast.success('Login successful!', {
+        icon: '🎉',
+        style: {
+          borderRadius: '10px',
+        },
+      });
+    },
+    onError(error) {
+      console.log('🔑 🚨 Login error', {error});
+      toast.error('Login failed. Please try again.', {
+        icon: '🚨',
+        style: {
+          borderRadius: '10px',
+        },
+      });
+    },
+  });
+
+  const {logout} = useLogout({
+    onSuccess: () => {
+      toast.success('Logout successful!', {
+        icon: '👋',
+        style: {
+          borderRadius: '10px',
+        },
+      });
+      setIsLoggedIn(false);
+    },
+  });
+
   useEffect(() => {
     if (isMobileMenuOpen) {
-      document.body.style.overflow = "hidden";
+      document.body.style.overflow = 'hidden';
     } else {
-      document.body.style.overflow = "auto";
+      document.body.style.overflow = 'auto';
     }
   }, [isMobileMenuOpen]);
 
@@ -30,7 +70,7 @@ const Navbar = () => {
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           type="button"
           className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-100 rounded-lg lg:hidden bg-gray-600/50 hover:bg-gray-800/60 focus:outline-none focus:ring-2 focus:ring-gray-500"
-          aria-expanded={isMobileMenuOpen ? "true" : "false"}
+          aria-expanded={isMobileMenuOpen ? 'true' : 'false'}
         >
           <span className="sr-only">Open main menu</span>
           <svg
@@ -50,9 +90,7 @@ const Navbar = () => {
           </svg>
         </button>
         <div
-          className={`w-full lg:block lg:w-auto ${
-            isMobileMenuOpen ? "block" : "hidden"
-          }`}
+          className={`w-full lg:block lg:w-auto ${isMobileMenuOpen ? 'block' : 'hidden'}`}
           id="navbar-default"
         >
           <ul className="font-medium font-primary flex flex-col p-4 md:p-0 mt-4 rounded-lg md:flex-row md:space-x-10 rtl:space-x-reverse md:mt-0">
@@ -60,9 +98,9 @@ const Navbar = () => {
               <Link
                 href="/"
                 className={`block py-2 px-3 ${
-                  pathname === "/"
-                    ? "text-[#34d399] hover:text-white"
-                    : "text-gray-300 hover:text-[#34d399]"
+                  pathname === '/'
+                    ? 'text-[#34d399] hover:text-white'
+                    : 'text-gray-300 hover:text-[#34d399]'
                 } rounded-lg hover:bg-neutral-900/40 md:hover:bg-transparent md:border-0 md:hover:text-[#34d399] md:p-0`}
                 aria-current="page"
               >
@@ -73,9 +111,9 @@ const Navbar = () => {
               <Link
                 href="/discover"
                 className={`block py-2 px-3 ${
-                  pathname === "/discover"
-                    ? "text-[#34d399] hover:text-white"
-                    : "text-gray-300 hover:text-[#34d399]"
+                  pathname === '/discover'
+                    ? 'text-[#34d399] hover:text-white'
+                    : 'text-gray-300 hover:text-[#34d399]'
                 } rounded-lg hover:bg-neutral-900/40 md:hover:bg-transparent md:border-0 md:hover:text-[#34d399] md:p-0`}
               >
                 Discover
@@ -85,16 +123,44 @@ const Navbar = () => {
               <Link
                 href="/products"
                 className={`block py-2 px-3 ${
-                  pathname === "/products"
-                    ? "text-[#34d399] hover:text-white"
-                    : "text-gray-300 hover:text-[#34d399]"
+                  pathname === '/products'
+                    ? 'text-[#34d399] hover:text-white'
+                    : 'text-gray-300 hover:text-[#34d399]'
                 } rounded-lg hover:bg-neutral-900/40 md:hover:bg-transparent md:border-0 md:hover:text-[#34d399] md:p-0`}
               >
                 Products
               </Link>
             </li>
           </ul>
+          <button
+            className="flex md:hidden w-fit px-5 py-2 text-neutral-700 bg-gradient-to-tr from-teal-400 to-amber-400 rounded-lg hover:from-teal-500 hover:to-amber-500 hover:text-gray-50 hover:shadow-lg"
+            onClick={login}
+            disabled={!ready || authenticated}
+          >
+            {isLoggedIn ? (
+              <span className="flex flex-row items-center gap-x-4">
+                <img src={user?.farcaster?.pfp!} alt="icon" className="w-10 h-10 rounded-full" />
+                {user?.farcaster?.username}
+              </span>
+            ) : (
+              'Connect Farcaster'
+            )}
+          </button>
         </div>
+        <button
+          className="hidden md:flex w-fit px-5 py-2 text-neutral-700 bg-gradient-to-tr from-teal-400 to-amber-400 rounded-lg hover:from-teal-500 hover:to-amber-500 hover:text-gray-50 hover:shadow-lg"
+          onClick={login}
+          disabled={!ready || authenticated}
+        >
+          {isLoggedIn ? (
+            <span className="flex flex-row items-center gap-x-4">
+              <img src={user?.farcaster?.pfp!} alt="icon" className="w-10 h-10 rounded-full" />
+              {user?.farcaster?.username}
+            </span>
+          ) : (
+            'Connect Farcaster'
+          )}
+        </button>
       </div>
     </nav>
   );
