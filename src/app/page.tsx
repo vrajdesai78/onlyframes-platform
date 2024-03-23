@@ -1,6 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-"use client";
-import Head from "next/head";
+import Head from 'next/head';
 
 export default function Home() {
   return (
@@ -9,7 +8,6 @@ export default function Home() {
         <title>OnlyFrames</title>
         <meta name="description" content="onlyframes" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="./favicon.ico" />
       </Head>
       <main className="relative px-5 py-[10rem] overflow-hidden">
         <div className="flex flex-col gap-8 items-center justify-center text-center">
@@ -44,10 +42,9 @@ export default function Home() {
             </span>
           </h1>
           <p className="mt-5 max-w-2xl text-xl font-primary text-neutral-300">
-            OnlyFrames is a powerful, but simple, e-commerce platform that puts
-            a wide selection of tools at your fingertips. Now you can sell the
-            digital services you want—books, memberships, courses, and
-            more—right to your audience on <b>Frames.</b>
+            OnlyFrames is a powerful, but simple, e-commerce platform that puts a wide selection of
+            tools at your fingertips. Now you can sell the digital services you want—books,
+            memberships, courses, and more—right to your audience on <b>Frames.</b>
           </p>
           <button className="w-fit mt-5 px-7 py-2 text-lg text-neutral-800 font-primary font-medium bg-teal-400 hover:bg-teal-500 border-2 border-neutral-100 hover:border-neutral-300 rounded-3xl">
             Start selling
