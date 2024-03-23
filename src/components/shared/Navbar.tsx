@@ -162,10 +162,36 @@ const Navbar = () => {
               </Link>
             </li>
           </ul>
+          <div className="flex flex-row items-center font-primary gap-2">
+            <button
+              className="flex md:hidden w-fit px-5 py-2 text-neutral-700 bg-gradient-to-tr from-teal-400 to-amber-400 rounded-lg hover:from-teal-500 hover:to-amber-500 hover:text-gray-50 hover:shadow-lg"
+              onClick={login}
+              disabled={!ready || authenticated}
+            >
+              {isLoggedIn ? (
+                <span className="flex flex-row items-center gap-x-4">
+                  <img src={user?.farcaster?.pfp!} alt="icon" className="w-10 h-10 rounded-full" />
+                  {user?.farcaster?.username}
+                </span>
+              ) : (
+                'Connect Farcaster'
+              )}
+            </button>
+            {isLoggedIn && (
+              <button
+                className="flex md:hidden w-fit px-5 py-1.5 text-neutral-300 border border-teal-400 hover:border-0 hover:bg-gradient-to-tr hover:from-teal-500 hover:to-amber-500 hover:text-gray-50 hover:shadow-lg rounded-lg"
+                onClick={logout}
+              >
+                Logout
+              </button>
+            )}
+          </div>
+        </div>
+        <div className="flex flex-row items-center gap-2">
           <button
-            className="flex md:hidden w-fit px-5 py-2 text-neutral-700 bg-gradient-to-tr from-teal-400 to-amber-400 rounded-lg hover:from-teal-500 hover:to-amber-500 hover:text-gray-50 hover:shadow-lg"
+            className="hidden md:flex w-fit px-5 py-2 text-neutral-700 bg-gradient-to-tr from-teal-400 to-amber-400 rounded-lg hover:from-teal-500 hover:to-amber-500 hover:text-gray-50 hover:shadow-lg"
             onClick={login}
-            disabled={!ready || authenticated}
+            disabled={!ready && authenticated}
           >
             {isLoggedIn ? (
               <span className="flex flex-row items-center gap-x-4">
@@ -176,21 +202,15 @@ const Navbar = () => {
               'Connect Farcaster'
             )}
           </button>
-        </div>
-        <button
-          className="hidden md:flex w-fit px-5 py-2 text-neutral-700 bg-gradient-to-tr from-teal-400 to-amber-400 rounded-lg hover:from-teal-500 hover:to-amber-500 hover:text-gray-50 hover:shadow-lg"
-          onClick={login}
-          disabled={!ready && authenticated}
-        >
-          {isLoggedIn ? (
-            <span className="flex flex-row items-center gap-x-4">
-              <img src={user?.farcaster?.pfp!} alt="icon" className="w-10 h-10 rounded-full" />
-              {user?.farcaster?.username}
-            </span>
-          ) : (
-            'Connect Farcaster'
+          {isLoggedIn && (
+            <button
+              className="hidden md:flex w-fit px-5 py-1.5 text-neutral-300 border border-teal-400 hover:border-0 hover:bg-gradient-to-tr hover:from-teal-500 hover:to-amber-500 hover:text-gray-50 hover:shadow-lg rounded-lg"
+              onClick={logout}
+            >
+              Logout
+            </button>
           )}
-        </button>
+        </div>
       </div>
     </nav>
   );
