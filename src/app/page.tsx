@@ -1,8 +1,10 @@
 /* eslint-disable @next/next/no-img-element */
 'use client';
 import Head from 'next/head';
+import {useRouter} from 'next/navigation';
 
 export default function Home() {
+  const router = useRouter();
   return (
     <>
       <Head>
@@ -47,7 +49,12 @@ export default function Home() {
             tools at your fingertips. Now you can sell the digital services you want—books,
             memberships, courses, and more—right to your audience on <b>Frames.</b>
           </p>
-          <button className="w-fit mt-5 px-7 py-2 text-lg text-neutral-800 font-primary font-medium bg-teal-400 hover:bg-teal-500 border-2 border-neutral-100 hover:border-neutral-300 rounded-3xl">
+          <button
+            className="w-fit mt-5 px-7 py-2 text-lg text-neutral-800 font-primary font-medium bg-teal-400 hover:bg-teal-500 border-2 border-neutral-100 hover:border-neutral-300 rounded-3xl"
+            onClick={() => {
+              router.push('/products/new');
+            }}
+          >
             Start selling
           </button>
         </div>
