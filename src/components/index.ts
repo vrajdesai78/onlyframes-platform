@@ -7,6 +7,7 @@ import Customize from './products/new/Customize';
 import Launchpad from './products/new/Launchpad';
 import LiftOff from './products/new/Liftoff';
 import TagInput from './products/new/Taginput';
+import Card from './shared/Card';
 
 export {
   Navbar,
@@ -18,4 +19,5 @@ export {
   Launchpad,
   LiftOff,
   TagInput,
+  Card,
 };
