@@ -17,19 +17,6 @@ const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const {wallets} = useWallets();
 
-  async function signMessage() {
-    const wallet = wallets[0];
-    const provider = await wallet.getEthersProvider();
-    await wallet.switchChain(84532);
-    const signer = provider.getSigner();
-    const message = 'Hello, world!';
-    const signature = await signer.signMessage(message);
-    console.log('🔑 🎉 Signature', {signature});
-    const podsContract = new ethers.Contract(podsContractAddress, podsABI, signer);
-    const podsBalance = await podsContract.getProductsCount(wallet.address);
-    console.log('🔑 🎉 Pods balance', {podsBalance});
-  }
-
   async function createGate() {
     const res = await fetch('/api/dynamic', {
       method: 'POST',

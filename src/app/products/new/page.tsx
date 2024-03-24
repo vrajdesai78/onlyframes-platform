@@ -4,6 +4,11 @@ import {NextPage} from 'next';
 import {Checkbox, Input, Upload} from '@/components';
 import Image from 'next/image';
 import {useState} from 'react';
+import {useWallets} from '@privy-io/react-auth';
+import {ethers} from 'ethers';
+import {podsContractAddress} from '../../../../utils/constants';
+import {podsABI} from '../../../../utils/abi';
+import {parseUnits} from 'viem';
 
 const CreateProduct: NextPage = () => {
   const [name, setName] = useState<string>('');
@@ -17,6 +22,7 @@ const CreateProduct: NextPage = () => {
   const [isContentUploading, setIsContentUploading] = useState<boolean>(false);
   const [isImageUploading, setIsImageUploading] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const {wallets} = useWallets();
 
   const uploadProductImage = async (file: any) => {
     setIsImageUploading(true);
@@ -57,6 +63,24 @@ const CreateProduct: NextPage = () => {
       setIsContentUploading(false);
     }
   };
+
+  async function createProduct() {
+    const wallet = wallets[0];
+    const provider = await wallet.getEthersProvider();
+    await wallet.switchChain(84532);
+    const signer = provider.getSigner();
+    const podsContract = new ethers.Contract(podsContractAddress, podsABI, signer);
+    const amount = parseUnits(price.toString(), 18);
+    const podsBalance = await podsContract.createProduct({
+      name,
+      contentUrl,
+      imageUrl,
+      amount,
+      maxSupplyFlag,
+      supply,
+    });
+    console.log('product created', podsBalance);
+  }
 
   return (
     <div className="flex-1 w-full pt-40 pb-10 px-5 md:px-40 flex flex-col justify-start items-start">
@@ -141,7 +165,7 @@ const CreateProduct: NextPage = () => {
           />
           <button
             onClick={async (e) => {
-              e.preventDefault();
+              console.log('Creating product...');
             }}
             className="w-full text-[#fffff] bg-teal-400 hover:bg-teal-400/90 rounded-lg px-5 py-2.5 text-center font-medium shadow disabled:opacity-75 disabled:cursor-progress"
             disabled={isImageUploading || isContentUploading}
