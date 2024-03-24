@@ -60,8 +60,6 @@ const Navbar = () => {
         }
       }
       console.log('🔑 🎉 User', {user});
-
-      await createGate();
       setIsLoggedIn(true);
       console.log('🔑 🎉 Login success', {user});
       toast.success('Login successful!', {

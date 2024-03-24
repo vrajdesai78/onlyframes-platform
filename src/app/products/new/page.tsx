@@ -9,6 +9,7 @@ import {ethers} from 'ethers';
 import {podsContractAddress} from '../../../../utils/constants';
 import {podsABI} from '../../../../utils/abi';
 import {parseUnits} from 'viem';
+import toast from 'react-hot-toast';
 
 const CreateProduct: NextPage = () => {
   const [name, setName] = useState<string>('');
@@ -70,16 +71,24 @@ const CreateProduct: NextPage = () => {
     await wallet.switchChain(84532);
     const signer = provider.getSigner();
     const podsContract = new ethers.Contract(podsContractAddress, podsABI, signer);
-    const amount = parseUnits(price.toString(), 18);
-    const podsBalance = await podsContract.createProduct({
-      name,
-      contentUrl,
-      imageUrl,
-      amount,
-      maxSupplyFlag,
-      supply,
-    });
-    console.log('product created', podsBalance);
+    // const amount = parseUnits(price.toString(), 18);
+    // const product = await podsContract.createProduct(
+    //   wallet.address,
+    //   name,
+    //   contentUrl,
+    //   imageUrl,
+    //   amount,
+    //   maxSupplyFlag,
+    //   supply,
+    // );
+    // toast.success('Product Created Successfully', {
+    //   icon: '🎉',
+    //   style: {
+    //     borderRadius: '10px',
+    //   },
+    // });
+
+    const contractAddress = await podsContract.getProducts(wallet.address);
   }
 
   return (
@@ -164,8 +173,9 @@ const CreateProduct: NextPage = () => {
             helper="Recommend to set product price (in ETH)"
           />
           <button
-            onClick={async (e) => {
-              console.log('Creating product...');
+            onClick={(e) => {
+              e.preventDefault();
+              createProduct();
             }}
             className="w-full text-[#fffff] bg-teal-400 hover:bg-teal-400/90 rounded-lg px-5 py-2.5 text-center font-medium shadow disabled:opacity-75 disabled:cursor-progress"
             disabled={isImageUploading || isContentUploading}
