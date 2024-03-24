@@ -132,8 +132,8 @@ const CreateProduct: NextPage = () => {
       const product = await podsContract.createProduct(
         wallet.address,
         name,
-        metadataURL,
         imageUrl,
+        metadataURL,
         amount,
         maxSupplyFlag,
         supply,

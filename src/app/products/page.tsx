@@ -61,13 +61,14 @@ const Products: NextPage = () => {
 
   const fetchData = async (productsData: any) => {
     let products: Products[] = [];
+    console.log(productsData);
     for (let product of productsData as any[]) {
       products.push({
         name: product.productName,
         price: formatEther(BigInt(product.price)),
         supply: product.supply.toString(),
         productAddress: product.productAddress,
-        image: product.previewImageURI,
+        image: product.productDataURI,
       });
     }
     soldUnits(products);
