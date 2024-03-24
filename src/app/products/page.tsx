@@ -7,6 +7,7 @@ import {usePrivy, useWallets} from '@privy-io/react-auth';
 import {NextPage} from 'next';
 import {useEffect, useState} from 'react';
 import {formatEther} from 'viem';
+import {peasABI} from '@/utils';
 
 const statsData = [
   {
@@ -22,7 +23,7 @@ const statsData = [
   {
     label: 'Total Revenue',
     desc: 'Total revenue generated from sales',
-    value: '$569',
+    value: 569,
   },
 ];
 
@@ -39,27 +40,30 @@ const Products: NextPage = () => {
   const [products, setProducts] = useState<any>([]);
   const {wallets} = useWallets();
   const {user} = usePrivy();
-
+  const [totalSoldUnits, setTotalSoldUnits] = useState<any>([]);
+  const [totalRevenue, setTotalRevenue] = useState<any>([]);
   const readData = async () => {
     if (user) {
       const wallet = wallets[0]?.address;
+      console.log('wallet address', wallet);
       try {
         const productsData = await publicClient.readContract({
           address: podsContractAddress,
           abi: podsABI,
           functionName: 'getProducts',
-          args: [wallet],
+          args: ['0x4aB65FEb7Dc1644Cabe45e00e918815D3acbFa0a'],
         });
         console.log(productsData);
-        setProductsData(productsData);
+        fetchData(productsData);
       } catch (e) {
         console.log(e);
       }
     }
   };
 
-  const fetchData = async () => {
+  const fetchData = async (productsData: any) => {
     let products: Products[] = [];
+    console.log('productsData', productsData);
     for (let product of productsData as any[]) {
       products.push({
         name: product.productName,
@@ -69,18 +73,59 @@ const Products: NextPage = () => {
         image: product.previewImageURI,
       });
     }
+    soldUnits(products);
     setProducts(products as any);
-    console.log(products);
+    revenueShare(products);
+  };
+
+  const soldUnits = async (products: Products[]) => {
+    if (user) {
+      try {
+        let total = 0;
+        for (let index = 0; index < products.length; index++) {
+          const product = products[index];
+          const soldUnits = await publicClient.readContract({
+            address: product.productAddress as '0xString',
+            abi: peasABI,
+            functionName: 'soldUnits',
+            args: [],
+          });
+          console.log('soldUnits', soldUnits);
+          total += Number(soldUnits);
+        }
+        setTotalSoldUnits(total as Number);
+      } catch (e) {
+        console.log(e);
+      }
+    }
+  };
+
+  const revenueShare = async (products: Products[]) => {
+    if (user) {
+      try {
+        let total = 0;
+        for (let index = 0; index < products.length; index++) {
+          const product = products[index];
+          const revenue = await publicClient.readContract({
+            address: product.productAddress as '0xString',
+            abi: peasABI,
+            functionName: 'revenueGenerated',
+            args: [],
+          });
+          console.log('revenue', formatEther(revenue as bigint));
+          total += Number(formatEther(revenue as bigint));
+        }
+        setTotalRevenue(total as Number);
+      } catch (e) {
+        console.log(e);
+      }
+    }
   };
 
   useEffect(() => {
-    if (productsData) {
-      fetchData();
+    if (user) {
+      readData();
     }
-  }, [productsData]);
-
-  useEffect(() => {
-    readData();
   }, [user]);
 
   return (
@@ -95,9 +140,17 @@ const Products: NextPage = () => {
               <AddBtn />
             </div>
             <div className="w-full grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 justify-evenly items-center gap-4">
-              {statsData.map((item) => {
-                return <StatsCard key={item.label} {...item} />;
-              })}
+              <StatsCard
+                label={statsData[0].label}
+                desc={statsData[0].desc}
+                value={products.length}
+              />
+              <StatsCard
+                label={statsData[1].label}
+                desc={statsData[1].desc}
+                value={totalSoldUnits}
+              />
+              <StatsCard label={statsData[2].label} desc={statsData[2].desc} value={totalRevenue} />
             </div>
             <div className="grid grid-flow-row grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 mt-8">
               {products.length === 0 ? (
