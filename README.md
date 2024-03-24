@@ -1,36 +1,39 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## OnlyFrames
 
-## Getting Started
+![logo](./public/onlyframes.png)
 
-First, run the development server:
+[Frame](https://github.com/Open-Sorcerer/onlyframes)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+[Subgraph](https://github.com/Open-Sorcerer/only-frames-graph)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+### What does it do
 
-## Learn More
+- It is a platform for creators to sell digital products (videos, e-books, images) via Farcaster Frames.
+- Users can discover and purchase these digital assets by minting Access NFTs, which grant them access to the purchased content.
 
-To learn more about Next.js, take a look at the following resources:
+### How does it work?
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Creators list their digital products (videos, e-books, images) on the platform, which are encrypted.
+- For each listed product, a new Smart Contract is launched through the Smart Contract Factory.
+- Users can discover and purchase these products by minting Access NFTs through the Post Frame.
+  After purchasing the Access NFT, users can view their purchased digital assets on the Viewing Page.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+### How is it made
 
-## Deploy on Vercel
+- We use Privy for Farcaster login on the website
+- We check for the user's Farcaster ID's reputation score using Karma3 Labs API, if the user has enough points, they can create their products. If not, they can only purchase products. It acts as a Sybil resistance mechanism.
+- The creator uploads digital assets and we encrypt them using Dynamic to provide Access Control via NFTs. Each product has a unique Smart Contract.
+- Privy provides an embedded wallet for the creator's Farcaster ID, which is used to sign transactions.
+- The creator can now share the buying link to his/her community via Farcaster Frames. The Frames act as a distribution channel for the creator.
+- The user can purchase the product by minting an Access NFT via Farcaster Frames. The Access NFT is stored in the user's wallet and grants access to the purchased digital asset.
+- The user can view the purchased digital asset on the Viewing Page, powered by Dynamic's Token Gating.
+- Behind the scenes, we are using the Graph Network to index the data on the blockchain and provide a fast and efficient way to query the data.
+- We are using Pinata's service to upload data to IPFS and store the metadata. We are using the Frames.js framework for creating Farcaster Frames.
+- The smart contracts are deployed on Base and Optimism.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Future Features
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+- Developing a mobile app for a better user experience.
+- Implementing social features like commenting, rating, and sharing of digital assets on top of Farcaster.
