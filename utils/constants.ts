@@ -1,5 +1,5 @@
 // deployed on base sepolia
-export const podsContractAddress = '0x80881394A9545fe9FdeD811Ec72594c3e480f572';
-export const peasContractAddressTest = '0x48B2db87FfB7A666368D0F7452E96c4e291fc67F';
+export const podsContractAddress = '0x5a1dDBb1F7AC14538060df1504BAd332C801f3FC';
+export const peasContractAddressTest = '0xc3f5084464b705eede4fbf1cae7c7baae48fb7d5';
 
 const rpcURL = 'https://rpc.ankr.com/base_sepolia';
