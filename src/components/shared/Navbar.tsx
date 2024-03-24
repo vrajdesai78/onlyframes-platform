@@ -12,17 +12,24 @@ import {podsABI} from '../../../utils/abi';
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [score, setScore] = useState<number>(0);
+  const [rank, setRank] = useState<number>(0);
   const pathname = usePathname();
   const {ready, authenticated, user, createWallet} = usePrivy();
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const {wallets} = useWallets();
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen((prevState) => !prevState);
+  };
 
   async function signMessage() {
     const wallet = wallets[0];
     const provider = await wallet.getEthersProvider();
     await wallet.switchChain(84532);
     const signer = provider.getSigner();
-    const message = 'Hello, world!';
+    const message = 'Hey anon, this is OnlyFrames!';
     const signature = await signer.signMessage(message);
     console.log('🔑 🎉 Signature', {signature});
     const podsContract = new ethers.Contract(podsContractAddress, podsABI, signer);
@@ -61,7 +68,8 @@ const Navbar = () => {
       body: JSON.stringify(username),
     });
     const data = await res.json();
-    console.log('🔑 🎉 Response', {data});
+    setRank(data?.rank!);
+    setScore(data?.score!);
   }
 
   const {login} = useLogin({
@@ -73,10 +81,8 @@ const Navbar = () => {
         }
       }
       console.log('🔑 🎉 User', {user});
-
-      await createGate();
+      await getReputationScore(user?.farcaster?.username!);
       setIsLoggedIn(true);
-      console.log('🔑 🎉 Login success', {user});
       toast.success('Login successful!', {
         icon: '🎉',
         style: {
@@ -117,7 +123,7 @@ const Navbar = () => {
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-opacity-20 backdrop-filter backdrop-blur-md mx-5 md:mx-16 lg:mx-20 md:px-10 my-2 border border-neutral-600 bg-[#141414]/40 rounded-xl">
-      <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+      <div className="max-w-screen-xl flex flex-wrap items-center justify-between p-4">
         <div className="flex">
           <Link
             href="/"
@@ -192,55 +198,116 @@ const Navbar = () => {
               </Link>
             </li>
           </ul>
-          <div className="flex flex-row items-center font-primary gap-2">
+          {!isLoggedIn ? (
             <button
               className="flex md:hidden w-fit px-5 py-2 text-neutral-700 bg-gradient-to-tr from-teal-400 to-amber-400 rounded-lg hover:from-teal-500 hover:to-amber-500 hover:text-gray-50 hover:shadow-lg"
               onClick={login}
-              disabled={!ready || authenticated}
+              disabled={!ready && authenticated}
             >
-              {isLoggedIn ? (
+              Connect Farcaster
+            </button>
+          ) : (
+            <div>
+              <button
+                className="flex md:hidden w-fit px-5 py-1.5 text-neutral-300 border border-teal-400 hover:border-amber-400 hover:bg-gradient-to-tr hover:from-teal-500 hover:to-amber-500 hover:text-gray-50 hover:shadow-lg rounded-lg"
+                onClick={toggleDropdown}
+              >
                 <span className="flex flex-row items-center gap-x-4">
                   <img src={user?.farcaster?.pfp!} alt="icon" className="w-10 h-10 rounded-full" />
                   {user?.farcaster?.username}
                 </span>
-              ) : (
-                'Connect Farcaster'
-              )}
-            </button>
-            {isLoggedIn && (
-              <button
-                className="flex md:hidden w-fit px-5 py-1.5 text-neutral-300 border border-teal-400 hover:border-0 hover:bg-gradient-to-tr hover:from-teal-500 hover:to-amber-500 hover:text-gray-50 hover:shadow-lg rounded-lg"
-                onClick={logout}
-              >
-                Logout
               </button>
-            )}
-          </div>
+              <div
+                className={`${
+                  isDropdownOpen ? 'block md:hidden absolute' : 'hidden'
+                } left-5 mt-1 z-10 divide-y divide-gray-100 rounded-lg shadow w-44 bg-neutral-900/95`}
+              >
+                <ul className="py-2 text-sm text-gray-200" aria-labelledby="dropdown-button">
+                  <li>
+                    <button
+                      type="button"
+                      className="inline-flex w-full gap-2 items-center px-4 py-2 hover:bg-neutral-800/90 hover:text-teal-400 hover:cursor-text"
+                    >
+                      Rank: <span className="text-[1rem] text-amber-400 font-medium">{rank}</span>
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      type="button"
+                      className="inline-flex w-full gap-2 items-center px-4 py-2 hover:bg-neutral-800/90 hover:text-teal-400 hover:cursor-text"
+                    >
+                      Score:{' '}
+                      <span className="text-[1rem] text-amber-400 font-medium">{score}%</span>
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      type="button"
+                      className="inline-flex w-full px-4 py-2 hover:bg-neutral-800/90 hover:text-teal-400"
+                      onClick={logout}
+                    >
+                      Logout
+                    </button>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          )}
         </div>
-        <div className="flex flex-row items-center gap-2">
+        {!isLoggedIn ? (
           <button
             className="hidden md:flex w-fit px-5 py-2 text-neutral-700 bg-gradient-to-tr from-teal-400 to-amber-400 rounded-lg hover:from-teal-500 hover:to-amber-500 hover:text-gray-50 hover:shadow-lg"
             onClick={login}
             disabled={!ready && authenticated}
           >
-            {isLoggedIn ? (
+            Connect Farcaster
+          </button>
+        ) : (
+          <div>
+            <button
+              className="hidden md:block w-fit px-5 py-1.5 text-neutral-300 border border-teal-400 hover:border-amber-400 hover:bg-gradient-to-tr hover:from-teal-500 hover:to-amber-500 hover:text-gray-50 hover:shadow-lg rounded-lg"
+              onClick={toggleDropdown}
+            >
               <span className="flex flex-row items-center gap-x-4">
                 <img src={user?.farcaster?.pfp!} alt="icon" className="w-10 h-10 rounded-full" />
                 {user?.farcaster?.username}
               </span>
-            ) : (
-              'Connect Farcaster'
-            )}
-          </button>
-          {isLoggedIn && (
-            <button
-              className="hidden md:flex w-fit px-5 py-1.5 text-neutral-300 border border-teal-400 hover:border-0 hover:bg-gradient-to-tr hover:from-teal-500 hover:to-amber-500 hover:text-gray-50 hover:shadow-lg rounded-lg"
-              onClick={logout}
-            >
-              Logout
             </button>
-          )}
-        </div>
+            <div
+              className={`${
+                isDropdownOpen ? 'hidden md:block absolute' : 'hidden'
+              } right-10 mt-1 z-10 divide-y divide-gray-100 rounded-lg shadow w-44 bg-neutral-900/95`}
+            >
+              <ul className="py-2 text-sm text-gray-200" aria-labelledby="dropdown-button">
+                <li>
+                  <button
+                    type="button"
+                    className="inline-flex w-full gap-2 items-center px-4 py-2 hover:bg-neutral-800/90 hover:text-teal-400 hover:cursor-text"
+                  >
+                    Rank: <span className="text-[1rem] text-amber-400 font-medium">{rank}</span>
+                  </button>
+                </li>
+                <li>
+                  <button
+                    type="button"
+                    className="inline-flex w-full gap-2 items-center px-4 py-2 hover:bg-neutral-800/90 hover:text-teal-400 hover:cursor-text"
+                  >
+                    Score: <span className="text-[1rem] text-amber-400 font-medium">{score}%</span>
+                  </button>
+                </li>
+                <li>
+                  <button
+                    type="button"
+                    className="inline-flex w-full px-4 py-2 hover:bg-neutral-800/90 hover:text-teal-400"
+                    onClick={logout}
+                  >
+                    Logout
+                  </button>
+                </li>
+              </ul>
+            </div>
+          </div>
+        )}
       </div>
     </nav>
   );
