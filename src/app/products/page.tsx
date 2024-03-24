@@ -45,13 +45,12 @@ const Products: NextPage = () => {
   const readData = async () => {
     if (user) {
       const wallet = wallets[0]?.address;
-      console.log('wallet address', wallet);
       try {
         const productsData = await publicClient.readContract({
           address: podsContractAddress,
           abi: podsABI,
           functionName: 'getProducts',
-          args: ['0x4aB65FEb7Dc1644Cabe45e00e918815D3acbFa0a'],
+          args: [wallet],
         });
         console.log(productsData);
         fetchData(productsData);
@@ -156,20 +155,25 @@ const Products: NextPage = () => {
               {products.length === 0 ? (
                 <p className="text-teal-400 text-lg">No products listed yet.</p>
               ) : (
-                products.map((product: any, index: any) => (
-                  <Card
-                    key={index}
-                    name={product.name}
-                    price={product.price}
-                    image={product.image}
-                    link={product.productAddress}
-                    label={
-                      <span className="flex flex-row gap-2">
-                        Share on <FarcasterIcon className="w-6 h-6" />
-                      </span>
-                    }
-                  />
-                ))
+                products.map(
+                  (product: any, index: any) => (
+                    console.log(product.image),
+                    (
+                      <Card
+                        key={index}
+                        name={product.name}
+                        price={product.price}
+                        image={product.image}
+                        link={product.productAddress}
+                        label={
+                          <span className="flex flex-row gap-2">
+                            Share on <FarcasterIcon className="w-6 h-6" />
+                          </span>
+                        }
+                      />
+                    )
+                  ),
+                )
               )}
             </div>
           </>

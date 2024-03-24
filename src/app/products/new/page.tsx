@@ -89,6 +89,12 @@ const CreateProduct: NextPage = () => {
     });
     const data = await res.json();
     console.log('🔑 🎉 Gate Created', {data});
+    toast.success('Token Gate created successfully', {
+      icon: '🔑',
+      style: {
+        borderRadius: '10px',
+      },
+    });
   }
 
   async function getReputationScore(username: string) {
