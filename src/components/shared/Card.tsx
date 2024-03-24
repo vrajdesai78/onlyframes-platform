@@ -16,7 +16,10 @@ const Card = ({name, price, image, label, link}: Card) => {
   return (
     <div className="flex flex-col w-fit bg-[#141414] bg-opacity-20 backdrop-filter backdrop-blur-sm rounded-xl shadow-md p-6">
       <Image
-        src={image}
+        src={
+          image ??
+          'https://gateway.pinata.cloud/ipfs/QmUNoWAZh1nS7nqN1n4B56S87hNwmdrcrSf9JZEV4Q69hC'
+        }
         alt={name}
         width={200}
         height={200}

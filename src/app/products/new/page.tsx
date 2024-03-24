@@ -23,8 +23,24 @@ const CreateProduct: NextPage = () => {
   const [isContentUploading, setIsContentUploading] = useState<boolean>(false);
   const [isImageUploading, setIsImageUploading] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [metadataURL, setMetadataURL] = useState<string>('');
   const {wallets} = useWallets();
   const {user} = usePrivy();
+
+  const uploadMetadata = async (image: string) => {
+    const body = {
+      name: name,
+      image: image,
+      description: 'This is a product of only-frame',
+    };
+    const res = await fetch('/api/json', {
+      method: 'POST',
+      body: JSON.stringify(body),
+    });
+    const data = await res.json();
+    console.log(`https://gateway.pinata.cloud/ipfs/${data.hash}`);
+    setMetadataURL(`https://gateway.pinata.cloud/ipfs/${data.hash}`);
+  };
 
   const uploadProductImage = async (file: any) => {
     setIsImageUploading(true);
@@ -38,6 +54,7 @@ const CreateProduct: NextPage = () => {
         body: formData,
       });
       const cid = await res.json();
+      await uploadMetadata(`https://gateway.pinata.cloud/ipfs/${cid.hash}`);
       setImageUrl(`https://gateway.pinata.cloud/ipfs/${cid.hash}`);
       setIsImageUploading(false);
     } catch (error) {
@@ -117,7 +134,7 @@ const CreateProduct: NextPage = () => {
       const product = await podsContract.createProduct(
         wallet.address,
         name,
-        contentUrl,
+        metadataURL,
         imageUrl,
         amount,
         maxSupplyFlag,
