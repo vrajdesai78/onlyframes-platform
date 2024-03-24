@@ -17,13 +17,8 @@ const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const {wallets} = useWallets();
 
-  const transactionRequest = {
-    to: '0x5dDdD2099cCcE0efaD8005695c616F130b944B8d',
-    value: 100000,
-  };
-  const wallet = wallets[0];
-
   async function signMessage() {
+    const wallet = wallets[0];
     const provider = await wallet.getEthersProvider();
     await wallet.switchChain(84532);
     const signer = provider.getSigner();
@@ -33,6 +28,15 @@ const Navbar = () => {
     const podsContract = new ethers.Contract(podsContractAddress, podsABI, signer);
     const podsBalance = await podsContract.getProductsCount(wallet.address);
     console.log('🔑 🎉 Pods balance', {podsBalance});
+  }
+
+  async function getReputationScore(username: string) {
+    const res = await fetch('/api/karma3', {
+      method: 'POST',
+      body: JSON.stringify(username),
+    });
+    const data = await res.json();
+    console.log('🔑 🎉 Response', {data});
   }
 
   const {login} = useLogin({
@@ -45,7 +49,7 @@ const Navbar = () => {
       }
       console.log('🔑 🎉 User', {user});
 
-      signMessage();
+      // await getReputationScore(user.farcaster?.username as string);
       setIsLoggedIn(true);
       console.log('🔑 🎉 Login success', {user});
       toast.success('Login successful!', {
