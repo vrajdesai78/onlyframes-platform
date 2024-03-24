@@ -30,6 +30,31 @@ const Navbar = () => {
     console.log('🔑 🎉 Pods balance', {podsBalance});
   }
 
+  async function createGate() {
+    const res = await fetch('/api/dynamic', {
+      method: 'POST',
+      body: JSON.stringify({
+        name: 'Super User Gate - 3',
+        outcome: 'scope',
+        rules: [
+          {
+            address: {
+              contractAddress: '0xF6a6a8bfE18aA7691713eeAbc30d8C48C821482b',
+              networkId: 84532,
+            },
+            filter: {
+              amount: 1,
+            },
+            type: 'nft',
+          },
+        ],
+        scope: 'superuser',
+      }),
+    });
+    const data = await res.json();
+    console.log('🔑 🎉 Response', {data});
+  }
+
   async function getReputationScore(username: string) {
     const res = await fetch('/api/karma3', {
       method: 'POST',
@@ -49,7 +74,7 @@ const Navbar = () => {
       }
       console.log('🔑 🎉 User', {user});
 
-      // await getReputationScore(user.farcaster?.username as string);
+      await createGate();
       setIsLoggedIn(true);
       console.log('🔑 🎉 Login success', {user});
       toast.success('Login successful!', {
