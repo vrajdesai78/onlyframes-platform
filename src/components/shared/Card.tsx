@@ -25,7 +25,7 @@ const Card = ({name, price, image, label, link}: Card) => {
       <span className="flex flex-row justify-between items-center">
         <p className="text-gray-300 font-primary font-normal">{price} ETH</p>
         <Link
-          href="https://warpcast.com"
+          href={`https://warpcast.com/~/compose?embeds[]=https://onlyframe.vercel.app/frames?address=${link}`}
           className="bg-gradient-to-br from-[#ffd84b] from-[20%] to-[#b67e2b] hover:from-[#ffd643] hover:from-[20%] hover:to-[#c18d40] font-primary font-medium items-center rounded-lg px-5 py-1.5 cursor-pointer"
         >
           {label}
