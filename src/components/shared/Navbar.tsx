@@ -25,12 +25,14 @@ const Navbar = () => {
 
   async function signMessage() {
     const provider = await wallet.getEthersProvider();
-    console.log('provider', provider);
     await wallet.switchChain(84532);
     const signer = provider.getSigner();
-    const helloWorldContract = new ethers.Contract(podsContractAddress, podsABI, signer);
-    const count = await helloWorldContract.getProductsCount();
-    console.log(count);
+    const message = 'Hello, world!';
+    const signature = await signer.signMessage(message);
+    console.log('🔑 🎉 Signature', {signature});
+    const podsContract = new ethers.Contract(podsContractAddress, podsABI, signer);
+    const podsBalance = await podsContract.getProductsCount(wallet.address);
+    console.log('🔑 🎉 Pods balance', {podsBalance});
   }
 
   const {login} = useLogin({
