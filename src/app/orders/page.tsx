@@ -87,21 +87,16 @@ const Discover: NextPage = () => {
             {products.length === 0 ? (
               <p className="text-secondary text-lg">No products listed yet.</p>
             ) : (
-              products.map(
-                (data, index) => (
-                  console.log(data.image),
-                  (
-                    <Card
-                      key={index}
-                      name={data.name}
-                      price={data.price}
-                      image={data.image}
-                      label={<span>Check transaction</span>}
-                      link=""
-                    />
-                  )
-                ),
-              )
+              products.map((data, index) => (
+                <Card
+                  key={index}
+                  name={data.name}
+                  price={data.price}
+                  image={data.image}
+                  label={<span>Check transaction</span>}
+                  link=""
+                />
+              ))
             )}
           </div>
         )}

@@ -38,7 +38,6 @@ const CreateProduct: NextPage = () => {
       body: JSON.stringify(body),
     });
     const data = await res.json();
-    console.log(`https://gateway.pinata.cloud/ipfs/${data.hash}`);
     setMetadataURL(`https://gateway.pinata.cloud/ipfs/${data.hash}`);
   };
 
@@ -105,7 +104,6 @@ const CreateProduct: NextPage = () => {
       }),
     });
     const data = await res.json();
-    console.log('🔑 🎉 Gate Created', {data});
     toast.success('Token Gate created successfully', {
       icon: '🔑',
       style: {

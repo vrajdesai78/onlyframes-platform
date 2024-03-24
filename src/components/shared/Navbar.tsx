@@ -36,10 +36,8 @@ const Navbar = () => {
       if (authenticated) {
         if (wallets.length === 0) {
           const res = createWallet();
-          console.log('🔑 🎉 Wallet created', {res});
         }
       }
-      console.log('🔑 🎉 User', {user});
       await getReputationScore(user.farcaster?.username!);
       setIsLoggedIn(true);
       toast.success('Login successful!', {

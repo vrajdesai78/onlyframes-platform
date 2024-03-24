@@ -52,7 +52,6 @@ const Products: NextPage = () => {
           functionName: 'getProducts',
           args: [wallet],
         });
-        console.log(productsData);
         fetchData(productsData);
       } catch (e) {
         console.log(e);
@@ -62,7 +61,6 @@ const Products: NextPage = () => {
 
   const fetchData = async (productsData: any) => {
     let products: Products[] = [];
-    console.log('productsData', productsData);
     for (let product of productsData as any[]) {
       products.push({
         name: product.productName,
@@ -89,7 +87,6 @@ const Products: NextPage = () => {
             functionName: 'soldUnits',
             args: [],
           });
-          console.log('soldUnits', soldUnits);
           total += Number(soldUnits);
         }
         setTotalSoldUnits(total as Number);
@@ -111,7 +108,6 @@ const Products: NextPage = () => {
             functionName: 'revenueGenerated',
             args: [],
           });
-          console.log('revenue', formatEther(revenue as bigint));
           total += Number(formatEther(revenue as bigint));
         }
         setTotalRevenue(total as Number);
@@ -155,25 +151,20 @@ const Products: NextPage = () => {
               {products.length === 0 ? (
                 <p className="text-teal-400 text-lg">No products listed yet.</p>
               ) : (
-                products.map(
-                  (product: any, index: any) => (
-                    console.log(product.image),
-                    (
-                      <Card
-                        key={index}
-                        name={product.name}
-                        price={product.price}
-                        image={product.image}
-                        link={product.productAddress}
-                        label={
-                          <span className="flex flex-row gap-2">
-                            Share on <FarcasterIcon className="w-6 h-6" />
-                          </span>
-                        }
-                      />
-                    )
-                  ),
-                )
+                products.map((product: any, index: any) => (
+                  <Card
+                    key={index}
+                    name={product.name}
+                    price={product.price}
+                    image={product.image}
+                    link={product.productAddress}
+                    label={
+                      <span className="flex flex-row gap-2">
+                        Share on <FarcasterIcon className="w-6 h-6" />
+                      </span>
+                    }
+                  />
+                ))
               )}
             </div>
           </>

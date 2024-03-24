@@ -41,7 +41,6 @@ export default async function handler(req: any, res: any) {
           return res.send(err);
         }
         const response = await saveFile(files.file as unknown as UploadedFile);
-        console.log({response});
         const {IpfsHash} = response;
 
         return res.status(200).send({
