@@ -514,16 +514,6 @@ export const peasABI = [
 				"internalType": "address",
 				"name": "account",
 				"type": "address"
-			},
-			{
-				"internalType": "uint256",
-				"name": "id",
-				"type": "uint256"
-			},
-			{
-				"internalType": "bytes",
-				"name": "data",
-				"type": "bytes"
 			}
 		],
 		"name": "mint",
@@ -832,49 +822,6 @@ export const podsABI = [
 		"inputs": [
 			{
 				"internalType": "address",
-				"name": "_productOwner",
-				"type": "address"
-			},
-			{
-				"internalType": "string",
-				"name": "_productName",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "_productDataURI",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "_previewImageURI",
-				"type": "string"
-			},
-			{
-				"internalType": "uint256",
-				"name": "_price",
-				"type": "uint256"
-			},
-			{
-				"internalType": "bool",
-				"name": "_finiteSupply",
-				"type": "bool"
-			},
-			{
-				"internalType": "uint256",
-				"name": "_supply",
-				"type": "uint256"
-			}
-		],
-		"name": "createProduct",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
 				"name": "platformOwner",
 				"type": "address"
 			}
@@ -943,21 +890,44 @@ export const podsABI = [
 		"type": "event"
 	},
 	{
-		"inputs": [],
-		"name": "renounceOwnership",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
 		"inputs": [
 			{
 				"internalType": "address",
-				"name": "newOwner",
+				"name": "_productOwner",
 				"type": "address"
+			},
+			{
+				"internalType": "string",
+				"name": "_productName",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_productDataURI",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_previewImageURI",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_price",
+				"type": "uint256"
+			},
+			{
+				"internalType": "bool",
+				"name": "_finiteSupply",
+				"type": "bool"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_supply",
+				"type": "uint256"
 			}
 		],
-		"name": "transferOwnership",
+		"name": "createProduct",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
@@ -1103,5 +1073,25 @@ export const podsABI = [
 		],
 		"stateMutability": "view",
 		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "renounceOwnership",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "newOwner",
+				"type": "address"
+			}
+		],
+		"name": "transferOwnership",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
 	}
-]
+];
