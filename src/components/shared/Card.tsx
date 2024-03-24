@@ -29,12 +29,17 @@ const Card = ({name, price, image, label, link}: Card) => {
       <h2 className="text-xl text-teal-400 font-primary font-medium truncate mt-3">{name}</h2>
       <span className="flex flex-row justify-between items-center">
         <p className="text-gray-300 font-primary font-normal">{price} ETH</p>
-        <Link
-          href={`https://warpcast.com/~/compose?embeds[]=https://onlyframe.vercel.app/frames?address=${link}`}
+        <button
+          onClick={() =>
+            window.open(
+              `https://warpcast.com/~/compose?embeds[]=https://onlyframe.vercel.app/frames?address=${link}`,
+              '_blank',
+            )
+          }
           className="bg-gradient-to-br from-[#ffd84b] from-[20%] to-[#b67e2b] hover:from-[#ffd643] hover:from-[20%] hover:to-[#c18d40] font-primary font-medium items-center rounded-lg px-5 py-1.5 cursor-pointer"
         >
           {label}
-        </Link>
+        </button>
       </span>
     </div>
   );
