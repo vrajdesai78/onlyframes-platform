@@ -1,6 +1,3 @@
-
-
-
 // SPDX-License-Identifier: MIT
 // Compatible with OpenZeppelin Contracts ^5.0.0
 pragma solidity ^0.8.20;
@@ -33,7 +30,7 @@ contract Pod is Ownable {
         address productAddress;
         string productName;
         string productDataURI;
-        string previewImage;
+        string previewImageURI;
         uint256 price;
         bool finiteSupply;
         uint256 supply;
@@ -47,9 +44,10 @@ contract Pod is Ownable {
 
 
     function createProduct(
+        address _productOwner,
         string memory _productName,
         string memory _productDataURI,
-        string memory _previewImage,
+        string memory _previewImageURI,
         uint256 _price,
         bool _finiteSupply,
         uint256 _supply
@@ -57,8 +55,9 @@ contract Pod is Ownable {
         
 
         Peas product = new Peas(
-            msg.sender,
+            _productOwner,
             _productDataURI,
+            _previewImageURI,
             _finiteSupply,
             _supply,
             _price
@@ -69,7 +68,7 @@ contract Pod is Ownable {
             productAddress: address(product),
             productName: _productName,
             productDataURI: _productDataURI,
-            previewImage: _previewImage,
+            previewImageURI: _previewImageURI,
             price: _price,
             finiteSupply: _finiteSupply,
             supply: _supply
@@ -102,21 +101,26 @@ contract Peas is ERC1155, Ownable, ERC1155Pausable, ERC1155Burnable, ERC1155Supp
     uint256 public price = 0 ether;
     bool public finiteSupply = false;
     uint256 public initialSupply = 0;
+    string public previewImageURI;
+    string public dataURI;
 
 
     constructor(
         address _productOwner, 
-        string memory uri, 
+        string memory _dataURI, 
+        string memory _previewImageURI, 
         bool _finiteSupply, 
         uint256 _initialSupply, 
         uint256 _price
     )
-        ERC1155(uri)
+        ERC1155(_previewImageURI)
         Ownable(_productOwner)
     {
         price = _price;
         finiteSupply = _finiteSupply;
         initialSupply = _initialSupply;
+        previewImageURI = _previewImageURI;
+        dataURI = _dataURI;
     }
 
     
@@ -133,7 +137,7 @@ contract Peas is ERC1155, Ownable, ERC1155Pausable, ERC1155Burnable, ERC1155Supp
         _unpause();
     }
 
-    function mint(address account, uint256 id, bytes memory data)
+    function mint(address account)
         public
         payable
     {
@@ -143,7 +147,7 @@ contract Peas is ERC1155, Ownable, ERC1155Pausable, ERC1155Burnable, ERC1155Supp
         payable(owner()).transfer(msg.value);
 
         // mint the token
-        _mint(account, id, 1, data);
+        _mint(account, 1, 1, "0x00");
     }
 
     function mintBatch(address to, uint256[] memory ids, uint256[] memory amounts, bytes memory data)
