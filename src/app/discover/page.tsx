@@ -1,64 +1,57 @@
 'use client';
 import {Card} from '@/components';
+import axios from 'axios';
 import {NextPage} from 'next';
 import Head from 'next/head';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 
-const products = [
-  {
-    name: 'Product 1',
-    price: 100,
-    image: '/images/product.png',
+let data = JSON.stringify({
+  query: `{
+  ownershipTransferreds(first: 5) {
+    id
+    previousOwner
+    newOwner
+    blockNumber
+  }
+  productCreateds(first: 5) {
+    id
+    creator
+    product
+    blockNumber
+  }
+}`,
+  variables: {},
+});
+
+let config = {
+  method: 'post',
+  maxBodyLength: Infinity,
+  url: 'https://api.studio.thegraph.com/query/37601/onlyframesv3/v0.1',
+  headers: {
+    'Content-Type': 'application/json',
+    Cookie:
+      '__cf_bm=IbNdTRLZCgpC4nXRkRQy_tuhmbBMdas3fmkjm2DiJfk-1711267853-1.0.1.1-uljFti8Q56RcpolToLdMjgLe.zINnWDiA4UiQKnN.YiBzgvQ.pvbe6_.x09v3uXZno2_LKLHr6ntnIv1hyt4JA',
   },
-  {
-    name: 'Product 2',
-    price: 200,
-    image: '/images/product.png',
-  },
-  {
-    name: 'Product 3',
-    price: 300,
-    image: '/images/product.png',
-  },
-  {
-    name: 'Product 4',
-    price: 400,
-    image: '/images/product.png',
-  },
-  {
-    name: 'Product 5',
-    price: 500,
-    image: '/images/product.png',
-  },
-  {
-    name: 'Product 6',
-    price: 600,
-    image: '/images/product.png',
-  },
-  {
-    name: 'Product 7',
-    price: 700,
-    image: '/images/product.png',
-  },
-  {
-    name: 'Product 8',
-    price: 800,
-    image: '/images/product.png',
-  },
-  {
-    name: 'Product 9',
-    price: 900,
-    image: '/images/product.png',
-  },
-  {
-    name: 'Product 10',
-    price: 1000,
-    image: '/images/product.png',
-  },
-];
+  data: data,
+};
 
 const Discover: NextPage = () => {
+  const [products, setProducts] = useState([]);
+  const [productsAddresses, setProductsAddresses] = useState();
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  useEffect(() => {
+    setIsLoading(true);
+    axios
+      .request(config)
+      .then((response) => {
+        setProductsAddresses(response.data.data.productCreateds);
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        console.log(error);
+        setIsLoading(false);
+      });
+  }, []);
 
   return (
     <>
@@ -85,16 +78,17 @@ const Discover: NextPage = () => {
         ) : (
           <div className="grid grid-flow-row grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 mt-8">
             {products.length === 0 ? (
-              <p className="text-secondary text-lg">No products listed yet.</p>
+              <p className="text-teal-400 text-lg">No products listed yet.</p>
             ) : (
               products.map((data, index) => (
-                <Card
-                  key={index}
-                  name={data.name}
-                  price={data.price}
-                  image={data.image}
-                  label={'Buy Now'}
-                />
+                // <Card
+                //   key={index}
+                //   name={data.name}
+                //   price={data.price}
+                //   image={data.image}
+                //   label={'Buy Now'}
+                // />
+                <></>
               ))
             )}
           </div>

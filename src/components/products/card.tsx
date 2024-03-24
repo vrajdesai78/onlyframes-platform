@@ -1,5 +1,5 @@
-import { InfoIcon } from "@/icons";
-import React, { ReactNode } from "react";
+import {InfoIcon} from '@/icons';
+import React, {ReactNode} from 'react';
 
 interface StatProps {
   children?: ReactNode;
@@ -9,7 +9,7 @@ interface StatProps {
 }
 
 const StatsCard = (props: StatProps) => {
-  const { label, desc, value } = props;
+  const {label, desc, value} = props;
   return (
     <div className="w-full h-full py-4 px-5 rounded-xl flex flex-col items-start justify-start gap-y-2 border bg-opacity-20 backdrop-filter backdrop-blur-md bg-gradient-to-br from-[#1c1c1c]/40 to-[#1f1f1f]/40 shadow-lg shadow-[#141414]/60 hover:shadow-xl hover:shadow-[#141414]/60 border-teal-400 hover:border-gray-300 min-h-min relative group">
       <div className="w-full flex flex-row text-white font-primary justify-between items-center">
@@ -27,9 +27,7 @@ const StatsCard = (props: StatProps) => {
           </div>
         </div>
       </div>
-      <h1 className="text-3xl md:text-4xl text-teal-400 font-primary font-semibold">
-        {value}
-      </h1>
+      <h1 className="text-3xl md:text-4xl text-amber-400 font-primary font-semibold">{value}</h1>
     </div>
   );
 };

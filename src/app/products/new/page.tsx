@@ -6,10 +6,9 @@ import Image from 'next/image';
 import {useEffect, useState} from 'react';
 import {usePrivy, useWallets} from '@privy-io/react-auth';
 import {ethers} from 'ethers';
-import {podsContractAddress} from '../../../../utils/constants';
-import {podsABI} from '../../../../utils/abi';
 import {parseUnits} from 'viem';
 import toast from 'react-hot-toast';
+import {podsABI, podsContractAddress} from '@/utils';
 
 const CreateProduct: NextPage = () => {
   const [name, setName] = useState<string>('');
@@ -102,7 +101,7 @@ const CreateProduct: NextPage = () => {
   }
 
   async function createProduct() {
-    if (score > 80) {
+    if (score > 60) {
       const wallet = wallets[0];
       const provider = await wallet.getEthersProvider();
       await wallet.switchChain(84532);
