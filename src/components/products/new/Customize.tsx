@@ -6,6 +6,10 @@ const Customize = (props: any) => {
   const {formData, setFormData} = props;
   const [currDrop, setCurrDrop] = useState<string | undefined>();
   let fileInputRef = useRef<HTMLInputElement>(null);
+  const [file, setFile] = useState<File | null>(null);
+  const [cid, setCid] = useState<string>('');
+  const [uploading, setUploading] = useState<boolean>(false);
+  const [contentCid, setContentCid] = useState<string>('');
 
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const {name, value} = e.target;
@@ -18,6 +22,82 @@ const Customize = (props: any) => {
     if (files && files.length > 0) {
       const selectedFile = files[0];
       console.log(name + '...' + selectedFile);
+    }
+  };
+
+  const uploadFile = async (fileToUpload: File) => {
+    try {
+      setUploading(true);
+      const formData = new FormData();
+      formData.append('file', fileToUpload);
+      const res = await fetch('/api/files', {
+        method: 'POST',
+        body: formData,
+      });
+      const ipfsHash = await res.text();
+      setCid(ipfsHash);
+      console.log(ipfsHash);
+      setUploading(false);
+    } catch (e) {
+      console.log(e);
+      setUploading(false);
+      alert('Trouble uploading file');
+    }
+  };
+
+  const uploadContent = async (fileToUpload: File) => {
+    try {
+      setUploading(true);
+      const formData = new FormData();
+      formData.append('file', fileToUpload);
+      const res = await fetch('/api/files', {
+        method: 'POST',
+        body: formData,
+      });
+      const ipfsHash = await res.text();
+      setContentCid(ipfsHash);
+      console.log(ipfsHash);
+      setUploading(false);
+    } catch (e) {
+      console.log(e);
+      setUploading(false);
+      alert('Trouble uploading file');
+    }
+  };
+
+  const uploadJSON = async (json: any) => {
+    try {
+      const res = await fetch('/api/json', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(json),
+      });
+
+      if (!res.ok) {
+        throw new Error(`Failed to upload JSON: ${res.statusText}`);
+      }
+      const data = await res.json();
+      console.log(data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log(e.target.files);
+    if (e.target.files && e.target.files[0]) {
+      setFile(e.target.files[0]);
+      uploadFile(e.target.files[0]);
+    }
+  };
+
+  const handleContentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log(e.target.files);
+    if (e.target.files && e.target.files[0]) {
+      setFile(e.target.files[0]);
+      uploadContent(e.target.files[0]);
     }
   };
 
@@ -61,7 +141,7 @@ const Customize = (props: any) => {
                 className="h-0 w-0"
                 accept="image/*"
                 required
-                onChange={handleFileInputChange}
+                onChange={handleChange}
               />
             </label>
           </div>
@@ -87,10 +167,7 @@ const Customize = (props: any) => {
               className="h-0 w-0"
               required
               defaultValue={formData.file_upload}
-              onChange={(ev) => {
-                setCurrDrop(ev.target.files?.[0]?.name);
-                handleFileInputChange(ev);
-              }}
+              onChange={handleContentChange}
             />
           </label>
           {currDrop && (
