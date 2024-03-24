@@ -1,8 +1,7 @@
-import formidable from "formidable";
-import fs from "fs";
-import FormData from "form-data";
-import PinataClient from "@pinata/sdk";
-const pinata = new PinataClient({ pinataJWTKey: process.env.PINATA_JWT });
+import formidable from 'formidable';
+import fs from 'fs';
+import PinataClient from '@pinata/sdk';
+const pinata = new PinataClient({pinataJWTKey: process.env.PINATA_JWT});
 
 export const config = {
   api: {
@@ -33,17 +32,17 @@ const saveFile = async (file: UploadedFile) => {
 };
 
 export default async function handler(req: any, res: any) {
-  if (req.method === "POST") {
+  if (req.method === 'POST') {
     try {
       const form = new formidable.IncomingForm();
       form.parse(req, async function (err, fields, files) {
         if (err) {
-          console.log({ err });
+          console.log({err});
           return res.send(err);
         }
         const response = await saveFile(files.file as unknown as UploadedFile);
-        console.log({ response });
-        const { IpfsHash } = response;
+        console.log({response});
+        const {IpfsHash} = response;
 
         return res.status(200).send({
           hash: IpfsHash,
@@ -51,9 +50,9 @@ export default async function handler(req: any, res: any) {
       });
     } catch (e) {
       console.log(e);
-      res.status(500).send("Server Error");
+      res.status(500).send('Server Error');
     }
-  } else if (req.method === "GET") {
+  } else if (req.method === 'GET') {
     try {
       const response = await pinata.pinList({
         pageLimit: 1,
@@ -62,7 +61,7 @@ export default async function handler(req: any, res: any) {
       res.json(response.rows[0]);
     } catch (e) {
       console.log(e);
-      res.status(500).send("Server Error");
+      res.status(500).send('Server Error');
     }
   }
 }

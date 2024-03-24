@@ -1,61 +1,61 @@
 'use client';
 
 import {NextPage} from 'next';
+import {Checkbox, Input, Upload} from '@/components';
+import Image from 'next/image';
 import {useState} from 'react';
-import {useRouter} from 'next/navigation';
-import {ChevronLeft, ChevronRight} from '@/icons';
-import {Breadcrumb, Customize, Launchpad, LiftOff} from '@/components';
-
-enum Category {
-  'Music Royalty',
-  'NFT, Collectibles or Art',
-  'Newsletter',
-  'E book',
-  'Course or Tutorial',
-  'Digital Good',
-  'Podcast',
-  'Audiobook',
-  'Physical Good',
-  'Miscellaneous',
-}
 
 const CreateProduct: NextPage = () => {
-  const tabItems = ['Launchpad', 'Customize', 'LiftOff'];
-  const [activeTab, setActiveTabState] = useState<number>(0);
-  const [formData, setFormData] = useState({
-    name: undefined,
-    author: 'FID',
-    genre: 'Miscellaneous',
-    price: undefined,
-    description: undefined,
-    thumbnail: undefined,
-    file_upload: undefined,
-    CTA: 'Buy Now',
-    tags: [],
-  });
-  const router = useRouter();
+  const [name, setName] = useState<string>('');
+  const [productImage, setProductImage] = useState<string>('');
+  const [contentImage, setContentImage] = useState<string>('');
+  const [imageUrl, setImageUrl] = useState<string>('');
+  const [contentUrl, setContentUrl] = useState<string>('');
+  const [price, setPrice] = useState<number>(0);
+  const [supply, setSupply] = useState<number>(10);
+  const [maxSupplyFlag, setMaxSupplyFlag] = useState<boolean>(false);
+  const [isContentUploading, setIsContentUploading] = useState<boolean>(false);
+  const [isImageUploading, setIsImageUploading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log('Form Data:', formData);
+  const uploadProductImage = async (file: any) => {
+    setIsImageUploading(true);
+    const image = URL.createObjectURL(file);
+    setProductImage(image);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      const res = await fetch('/api/files', {
+        method: 'POST',
+        body: formData,
+      });
+      const cid = await res.json();
+      setImageUrl(`https://gateway.pinata.cloud/ipfs/${cid.hash}`);
+      setIsImageUploading(false);
+    } catch (error) {
+      console.log(error);
+      setIsImageUploading(false);
+    }
   };
 
-  const setActiveTab = (newTab: number) => {
-    if (newTab == 0) setActiveTabState(newTab);
-    else if (newTab == 1) {
-      formData.name && formData.genre && formData.price && setActiveTabState(newTab);
-    } else if (newTab == 2) {
-      formData.name &&
-        formData.genre &&
-        formData.price &&
-        formData.description &&
-        setActiveTabState(newTab);
-    } else if (newTab === 3)
-      formData.name && formData.genre && formData.price && formData.description && poster();
-  };
-
-  const poster = async () => {
-    router.push('/products');
+  const uploadContentImage = async (file: any) => {
+    setIsContentUploading(true);
+    const image = URL.createObjectURL(file);
+    setContentImage(image);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      const res = await fetch('/api/files', {
+        method: 'POST',
+        body: formData,
+      });
+      const cid = await res.json();
+      setContentUrl(`https://gateway.pinata.cloud/ipfs/${cid.hash}`);
+      setIsContentUploading(false);
+    } catch (error) {
+      console.log(error);
+      setIsContentUploading(false);
+    }
   };
 
   return (
@@ -66,38 +66,92 @@ const CreateProduct: NextPage = () => {
             What&apos;s brewing in your creative cauldron?
           </h1>
         </div>
-        <form
-          className="flex w-full flex-col justify-start items-start gap-10"
-          onSubmit={handleSubmit}
-        >
-          <div className="w-full h-fit flex justify-between items-center font-primary">
-            <Breadcrumb activeTab={activeTab} setActiveTab={setActiveTab} tabItems={tabItems} />
-            <div className="w-60 h-fit flex flex-row justify-end gap-3">
-              <button
-                type="button"
-                className="w-fit h-fit px-3 py-1.5 flex flex-row items-center justify-evenly gap-2 text-gray-300 border border-neutral-300 hover:border-neutral-400 font-normal rounded-lg group"
-                onClick={() => setActiveTab(activeTab - 1)}
-              >
-                <div className="transform group-hover:-translate-x-1 transition-transform">
-                  <ChevronLeft className="w-3 h-3" />
-                </div>
-                Back
-              </button>
-              <button
-                type="submit"
-                className="w-fit h-fit px-3 py-1.5 flex flex-row items-center justify-evenly gap-2 text-gray-300 border border-neutral-300 hover:border-neutral-400 font-normal rounded-lg group"
-                onClick={() => setActiveTab(activeTab + 1)}
-              >
-                Next
-                <div className="transform group-hover:translate-x-1 transition-transform">
-                  <ChevronRight className="w-3 h-3" />
-                </div>
-              </button>
+        <form className="flex flex-col space-y-5 w-[90%] md:max-w-[600px] mx-auto">
+          <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-10">
+            <div className="flex flex-col items-center justify-center gap-5 mb-5">
+              <Image
+                className="mx-auto bg-amber-500 rounded-lg object-fill"
+                src={productImage !== '' ? productImage : '/images/preview.png'}
+                alt="preview"
+                width={200}
+                height={200}
+              />
+              <Upload
+                id="image"
+                name="image"
+                type="file"
+                label="Upload Product"
+                onChange={(e) => {
+                  uploadProductImage(e.target.files[0]);
+                }}
+              />
+            </div>
+            <div className="flex flex-col items-center justify-center gap-5 mb-5">
+              <Image
+                className="mx-auto rounded-lg object-fill"
+                src={contentImage !== '' ? contentImage : '/images/content.jpeg'}
+                alt="preview"
+                width={200}
+                height={200}
+              />
+              <Upload
+                id="content"
+                name="content"
+                type="file"
+                label="Upload Preview"
+                onChange={(e) => {
+                  uploadContentImage(e.target.files[0]);
+                }}
+              />
             </div>
           </div>
-          {activeTab === 0 && <Launchpad formData={formData} setFormData={setFormData} />}
-          {activeTab === 1 && <Customize formData={formData} setFormData={setFormData} />}
-          {activeTab === 2 && <LiftOff formData={formData} setFormData={setFormData} />}
+          <Input
+            id="name"
+            name="name"
+            label="Name"
+            placeholder="Azuki Elementals"
+            type="text"
+            onChange={(e) => setName(e.target.value)}
+            helper="This Can Be Your Product Name or Unique Vibe"
+          />
+          <Checkbox
+            id="maxSupplyFlag"
+            name="maxSupplyFlag"
+            label="Set Max Supply (Optional)"
+            onChange={(e) => setMaxSupplyFlag(e.target.checked)}
+          />
+          {maxSupplyFlag && (
+            <Input
+              id="supply"
+              name="supply"
+              label="Max Supply"
+              placeholder="0"
+              type="number"
+              onChange={(e) => setSupply(e.target.value)}
+            />
+          )}
+          <Input
+            id="price"
+            name="price"
+            label="Price"
+            placeholder="0.05"
+            type="number"
+            onChange={(e) => setPrice(e.target.value)}
+            helper="Recommend to set product price (in ETH)"
+          />
+          <button
+            onClick={async (e) => {
+              e.preventDefault();
+            }}
+            className="w-full text-[#fffff] bg-teal-400 hover:bg-teal-400/90 rounded-lg px-5 py-2.5 text-center font-medium shadow disabled:opacity-75 disabled:cursor-progress"
+            disabled={isImageUploading || isContentUploading}
+          >
+            {isImageUploading || isContentUploading
+              ? 'Uploading Image...'
+              : isLoading
+                ? 'Getting your product ready...'
+                : 'Add product 🚀'}
+          </button>
         </form>
       </div>
     </div>

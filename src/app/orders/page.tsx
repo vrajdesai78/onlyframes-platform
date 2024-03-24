@@ -8,52 +8,52 @@ const products = [
   {
     name: 'Product 1',
     price: 100,
-    image: '/product.png',
+    image: '/images/product.png',
   },
   {
     name: 'Product 2',
     price: 200,
-    image: '/product.png',
+    image: '/images/product.png',
   },
   {
     name: 'Product 3',
     price: 300,
-    image: '/product.png',
+    image: '/images/product.png',
   },
   {
     name: 'Product 4',
     price: 400,
-    image: '/product.png',
+    image: '/images/product.png',
   },
   {
     name: 'Product 5',
     price: 500,
-    image: '/product.png',
+    image: '/images/product.png',
   },
   {
     name: 'Product 6',
     price: 600,
-    image: '/product.png',
+    image: '/images/product.png',
   },
   {
     name: 'Product 7',
     price: 700,
-    image: '/product.png',
+    image: '/images/product.png',
   },
   {
     name: 'Product 8',
     price: 800,
-    image: '/product.png',
+    image: '/images/product.png',
   },
   {
     name: 'Product 9',
     price: 900,
-    image: '/product.png',
+    image: '/images/product.png',
   },
   {
     name: 'Product 10',
     price: 1000,
-    image: '/product.png',
+    image: '/images/product.png',
   },
 ];
 

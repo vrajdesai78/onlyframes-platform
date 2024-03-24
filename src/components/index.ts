@@ -2,22 +2,9 @@ import Navbar from './shared/Navbar';
 import StatsCard from './products/card';
 import ProductTable from './products/table';
 import AddBtn from './products/create';
-import Breadcrumb from './products/new/Breadcrumb';
-import Customize from './products/new/Customize';
-import Launchpad from './products/new/Launchpad';
-import LiftOff from './products/new/Liftoff';
-import TagInput from './products/new/Taginput';
-import Card from './shared/Card';
+import Card from './shared/card';
+import Checkbox from './form/checkbox';
+import Input from './form/input';
+import Upload from './form/upload';
 
-export {
-  Navbar,
-  StatsCard,
-  ProductTable,
-  AddBtn,
-  Breadcrumb,
-  Customize,
-  Launchpad,
-  LiftOff,
-  TagInput,
-  Card,
-};
+export {Navbar, StatsCard, ProductTable, AddBtn, Card, Checkbox, Input, Upload};
