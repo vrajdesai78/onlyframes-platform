@@ -93,7 +93,8 @@ const Discover: NextPage = () => {
                   name={data.name}
                   price={data.price}
                   image={data.image}
-                  label={'Check transaction'}
+                  label={<span>Check transaction</span>}
+                  link=""
                 />
               ))
             )}
