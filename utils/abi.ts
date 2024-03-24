@@ -994,7 +994,13 @@ export const podsABI = [
 		"type": "function"
 	},
 	{
-		"inputs": [],
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_creator",
+				"type": "address"
+			}
+		],
 		"name": "getProducts",
 		"outputs": [
 			{
@@ -1049,7 +1055,13 @@ export const podsABI = [
 		"type": "function"
 	},
 	{
-		"inputs": [],
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_creator",
+				"type": "address"
+			}
+		],
 		"name": "getProductsCount",
 		"outputs": [
 			{
@@ -1094,4 +1106,4 @@ export const podsABI = [
 		"stateMutability": "nonpayable",
 		"type": "function"
 	}
-];
+]
