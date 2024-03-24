@@ -25,11 +25,11 @@ const Input = ({id, name, label, placeholder, type, onChange, value, helper}: II
         id={id}
         name={name}
         onChange={onChange}
-        className="mt-2 bg-[#141414]/20 border border-neutral-500 text-secondary text-sm placeholder:text-gray-300 rounded-lg focus:border-secondary focus:ring-secondary active:border-secondary active:ring-secondary block w-full p-2.5"
+        className="mt-2 bg-[#141414]/20 border border-neutral-500 text-neutral-200 text-sm placeholder:text-gray-300 rounded-lg focus:border-neutral-300 focus:ring-neutral-300 active:border-neutral-400 active:ring-neutral-400 block w-full p-2.5"
         placeholder={placeholder}
         type={type}
         value={value}
-        required
+        // required
       />
       <div className="text-sm mt-1 text-gray-400">{helper}</div>
     </div>

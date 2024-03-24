@@ -3,12 +3,19 @@
 import {NextPage} from 'next';
 import {Checkbox, Input, Upload} from '@/components';
 import Image from 'next/image';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
+import {usePrivy, useWallets} from '@privy-io/react-auth';
+import {ethers} from 'ethers';
+import {podsContractAddress} from '../../../../utils/constants';
+import {podsABI} from '../../../../utils/abi';
+import {parseUnits} from 'viem';
+import toast from 'react-hot-toast';
 
 const CreateProduct: NextPage = () => {
   const [name, setName] = useState<string>('');
   const [productImage, setProductImage] = useState<string>('');
   const [contentImage, setContentImage] = useState<string>('');
+  const [score, setScore] = useState<number>(0);
   const [imageUrl, setImageUrl] = useState<string>('');
   const [contentUrl, setContentUrl] = useState<string>('');
   const [price, setPrice] = useState<number>(0);
@@ -17,6 +24,8 @@ const CreateProduct: NextPage = () => {
   const [isContentUploading, setIsContentUploading] = useState<boolean>(false);
   const [isImageUploading, setIsImageUploading] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const {wallets} = useWallets();
+  const {user} = usePrivy();
 
   const uploadProductImage = async (file: any) => {
     setIsImageUploading(true);
@@ -57,6 +66,74 @@ const CreateProduct: NextPage = () => {
       setIsContentUploading(false);
     }
   };
+
+  async function createGate(name: string, address: string) {
+    const res = await fetch('/api/dynamic', {
+      method: 'POST',
+      body: JSON.stringify({
+        name: name,
+        outcome: 'scope',
+        rules: [
+          {
+            address: {
+              contractAddress: address,
+              networkId: 84532,
+            },
+            filter: {
+              amount: 1,
+            },
+            type: 'nft',
+          },
+        ],
+        scope: 'superuser',
+      }),
+    });
+    const data = await res.json();
+    console.log('🔑 🎉 Gate Created', {data});
+  }
+
+  async function getReputationScore(username: string) {
+    const res = await fetch('/api/karma3', {
+      method: 'POST',
+      body: JSON.stringify(username),
+    });
+    const data = await res.json();
+    setScore(data?.score!);
+  }
+
+  async function createProduct() {
+    if (score > 80) {
+      const wallet = wallets[0];
+      const provider = await wallet.getEthersProvider();
+      await wallet.switchChain(84532);
+      const signer = provider.getSigner();
+      const podsContract = new ethers.Contract(podsContractAddress, podsABI, signer);
+      const amount = parseUnits(price.toString(), 18);
+      const product = await podsContract.createProduct(
+        wallet.address,
+        name,
+        contentUrl,
+        imageUrl,
+        amount,
+        maxSupplyFlag,
+        supply,
+      );
+      toast.success('Product Created Successfully', {
+        icon: '🎉',
+        style: {
+          borderRadius: '10px',
+        },
+      });
+      const contractAddress = await podsContract.getProducts(wallet.address);
+      await createGate(name, contractAddress[contractAddress.length - 1].productAddress);
+    }
+  }
+
+  useEffect(() => {
+    if (user) {
+      getReputationScore(user.farcaster?.username!);
+    }
+  }, [user]);
 
   return (
     <div className="flex-1 w-full pt-40 pb-10 px-5 md:px-40 flex flex-col justify-start items-start">
@@ -140,8 +217,18 @@ const CreateProduct: NextPage = () => {
             helper="Recommend to set product price (in ETH)"
           />
           <button
-            onClick={async (e) => {
+            onClick={(e) => {
               e.preventDefault();
+              if (user) {
+                createProduct();
+              } else {
+                toast.error('Please connect your farcaster to create a product', {
+                  icon: '🔒',
+                  style: {
+                    borderRadius: '10px',
+                  },
+                });
+              }
             }}
             className="w-full text-[#fffff] bg-teal-400 hover:bg-teal-400/90 rounded-lg px-5 py-2.5 text-center font-medium shadow disabled:opacity-75 disabled:cursor-progress"
             disabled={isImageUploading || isContentUploading}

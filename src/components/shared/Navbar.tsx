@@ -6,9 +6,6 @@ import Link from 'next/link';
 import {usePathname} from 'next/navigation';
 import {useEffect, useState} from 'react';
 import {toast} from 'react-hot-toast';
-import {ethers} from 'ethers';
-import {podsContractAddress} from '../../../utils/constants';
-import {podsABI} from '../../../utils/abi';
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
@@ -23,44 +20,6 @@ const Navbar = () => {
   const toggleDropdown = () => {
     setIsDropdownOpen((prevState) => !prevState);
   };
-
-  async function signMessage() {
-    const wallet = wallets[0];
-    const provider = await wallet.getEthersProvider();
-    await wallet.switchChain(84532);
-    const signer = provider.getSigner();
-    const message = 'Hey anon, this is OnlyFrames!';
-    const signature = await signer.signMessage(message);
-    console.log('🔑 🎉 Signature', {signature});
-    const podsContract = new ethers.Contract(podsContractAddress, podsABI, signer);
-    const podsBalance = await podsContract.getProductsCount(wallet.address);
-    console.log('🔑 🎉 Pods balance', {podsBalance});
-  }
-
-  async function createGate() {
-    const res = await fetch('/api/dynamic', {
-      method: 'POST',
-      body: JSON.stringify({
-        name: 'Super User Gate - 3',
-        outcome: 'scope',
-        rules: [
-          {
-            address: {
-              contractAddress: '0xF6a6a8bfE18aA7691713eeAbc30d8C48C821482b',
-              networkId: 84532,
-            },
-            filter: {
-              amount: 1,
-            },
-            type: 'nft',
-          },
-        ],
-        scope: 'superuser',
-      }),
-    });
-    const data = await res.json();
-    console.log('🔑 🎉 Response', {data});
-  }
 
   async function getReputationScore(username: string) {
     const res = await fetch('/api/karma3', {
@@ -81,7 +40,7 @@ const Navbar = () => {
         }
       }
       console.log('🔑 🎉 User', {user});
-      await getReputationScore(user?.farcaster?.username!);
+      await getReputationScore(user.farcaster?.username!);
       setIsLoggedIn(true);
       toast.success('Login successful!', {
         icon: '🎉',
