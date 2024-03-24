@@ -64,7 +64,7 @@ contract Pod is Ownable {
         );
 
         Product memory newProduct = Product({
-            creator: msg.sender,
+            creator: _productOwner,
             productAddress: address(product),
             productName: _productName,
             productDataURI: _productDataURI,
@@ -74,21 +74,22 @@ contract Pod is Ownable {
             supply: _supply
         });
 
-        productWarehouse[msg.sender].push(newProduct);
+        productWarehouse[_productOwner].push(newProduct);
 
-        emit ProductCreated(msg.sender, address(product));
+        emit ProductCreated(_productOwner, address(product));
+
     }
 
-    function getProducts() public view returns (Product[] memory) {
-        return productWarehouse[msg.sender];
+    function getProducts(address _creator) public view returns (Product[] memory) {
+        return productWarehouse[_creator];
     }
 
     function getProduct(uint256 index) public view returns (Product memory) {
         return productWarehouse[msg.sender][index];
     }
 
-    function getProductsCount() public view returns (uint256) {
-        return productWarehouse[msg.sender].length;
+    function getProductsCount(address _creator) public view returns (uint256) {
+        return productWarehouse[_creator].length;
     }
 
 }
@@ -99,6 +100,8 @@ contract Peas is ERC1155, Ownable, ERC1155Pausable, ERC1155Burnable, ERC1155Supp
 
     uint256 public soldUnits = 0;
     uint256 public price = 0 ether;
+    uint256 public revenueGenerated = 0;
+
     bool public finiteSupply = false;
     uint256 public initialSupply = 0;
     string public previewImageURI;
@@ -145,6 +148,10 @@ contract Peas is ERC1155, Ownable, ERC1155Pausable, ERC1155Burnable, ERC1155Supp
 
         // transfer the funds to the owner
         payable(owner()).transfer(msg.value);
+
+        soldUnits+=1;
+
+        revenueGenerated+= price;
 
         // mint the token
         _mint(account, 1, 1, "0x00");
