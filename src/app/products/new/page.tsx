@@ -12,6 +12,7 @@ import {podsABI, podsContractAddress} from '@/utils';
 
 const CreateProduct: NextPage = () => {
   const [name, setName] = useState<string>('');
+  const [description, setDescription] = useState<string>('');
   const [productImage, setProductImage] = useState<string>('');
   const [contentImage, setContentImage] = useState<string>('');
   const [score, setScore] = useState<number>(0);
@@ -27,19 +28,19 @@ const CreateProduct: NextPage = () => {
   const {wallets} = useWallets();
   const {user} = usePrivy();
 
-  const uploadMetadata = async (image: string) => {
+  const uploadMetadata = async () => {
     const body = {
       name: name,
-      image: image,
-      description: 'This is a product of only-frame',
+      image: imageUrl,
+      description: description,
     };
-    // const res = await fetch('/api/json', {
-    //   method: 'POST',
-    //   body: JSON.stringify(body),
-    // });
-    // const data = await res.json();
-    // setMetadataURL(`https://gateway.pinata.cloud/ipfs/${data.hash}`);
-    console.log('metadata', body);
+    const res = await fetch('/api/json', {
+      method: 'POST',
+      body: JSON.stringify(body),
+    });
+    const data = await res.json();
+    setMetadataURL(`https://gateway.pinata.cloud/ipfs/${data.hash}`);
+    return `https://gateway.pinata.cloud/ipfs/${data.hash}`;
   };
 
   const uploadProductImage = async (file: any) => {
@@ -54,8 +55,8 @@ const CreateProduct: NextPage = () => {
         body: formData,
       });
       const cid = await res.json();
-      await uploadMetadata(`https://gateway.pinata.cloud/ipfs/${cid.hash}`);
       setImageUrl(`https://gateway.pinata.cloud/ipfs/${cid.hash}`);
+      console.log(isImageUploading);
       setIsImageUploading(false);
     } catch (error) {
       console.log(error);
@@ -122,7 +123,7 @@ const CreateProduct: NextPage = () => {
     setScore(data?.score!);
   }
 
-  async function createProduct() {
+  async function createProduct(metadataURL: string) {
     if (score > 60) {
       const wallet = wallets[0];
       const provider = await wallet.getEthersProvider();
@@ -168,7 +169,7 @@ const CreateProduct: NextPage = () => {
           <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-10">
             <div className="flex flex-col items-center justify-center gap-5 mb-5">
               <Image
-                className="mx-auto bg-amber-500 rounded-lg object-fill"
+                className="mx-auto w-[14rem] h-[14rem] bg-amber-500 rounded-lg object-fill"
                 src={productImage !== '' ? productImage : '/images/preview.png'}
                 alt="preview"
                 width={200}
@@ -186,7 +187,7 @@ const CreateProduct: NextPage = () => {
             </div>
             <div className="flex flex-col items-center justify-center gap-5 mb-5">
               <Image
-                className="mx-auto rounded-lg object-fill"
+                className="mx-auto w-[14rem] h-[14rem] bg-amber-500 rounded-lg object-fill"
                 src={contentImage !== '' ? contentImage : '/images/content.jpeg'}
                 alt="preview"
                 width={200}
@@ -211,6 +212,15 @@ const CreateProduct: NextPage = () => {
             type="text"
             onChange={(e) => setName(e.target.value)}
             helper="This Can Be Your Product Name or Unique Vibe"
+          />
+          <Input
+            id="description"
+            name="description"
+            label="Description"
+            placeholder="This is official Azuki community product."
+            type="text"
+            onChange={(e) => setDescription(e.target.value)}
+            helper="This Can Be Your Brief Description or Product Tagline"
           />
           <Checkbox
             id="maxSupplyFlag"
@@ -238,10 +248,11 @@ const CreateProduct: NextPage = () => {
             helper="Recommend to set product price (in ETH)"
           />
           <button
-            onClick={(e) => {
+            onClick={async (e) => {
               e.preventDefault();
               if (user) {
-                createProduct();
+                const metadataURL = await uploadMetadata();
+                createProduct(metadataURL);
               } else {
                 toast.error('Please connect your farcaster to create a product', {
                   icon: '🔒',
