@@ -255,6 +255,26 @@ const Navbar = () => {
                 <li>
                   <button
                     type="button"
+                    className="inline-flex w-full gap-2 items-center px-4 py-2 hover:bg-neutral-800/90 hover:text-teal-400"
+                    onClick={async () => {
+                      await navigator.clipboard.writeText(wallets[0]?.address);
+                      toast.success('Copied wallet address to clipboard!', {
+                        icon: '📋',
+                        style: {
+                          borderRadius: '10px',
+                        },
+                      });
+                    }}
+                  >
+                    Address:{' '}
+                    <span className="text-[1rem] text-amber-400 text-ellipsis w-full font-medium">
+                      {wallets[0]?.address.slice(0, 4)}...{wallets[0]?.address.slice(-4)}
+                    </span>
+                  </button>
+                </li>
+                <li>
+                  <button
+                    type="button"
                     className="inline-flex w-full px-4 py-2 hover:bg-neutral-800/90 hover:text-teal-400"
                     onClick={logout}
                   >

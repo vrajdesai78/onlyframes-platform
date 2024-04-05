@@ -33,12 +33,13 @@ const CreateProduct: NextPage = () => {
       image: image,
       description: 'This is a product of only-frame',
     };
-    const res = await fetch('/api/json', {
-      method: 'POST',
-      body: JSON.stringify(body),
-    });
-    const data = await res.json();
-    setMetadataURL(`https://gateway.pinata.cloud/ipfs/${data.hash}`);
+    // const res = await fetch('/api/json', {
+    //   method: 'POST',
+    //   body: JSON.stringify(body),
+    // });
+    // const data = await res.json();
+    // setMetadataURL(`https://gateway.pinata.cloud/ipfs/${data.hash}`);
+    console.log('metadata', body);
   };
 
   const uploadProductImage = async (file: any) => {
